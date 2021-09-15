@@ -26,6 +26,7 @@ const List = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   grid-gap: 15px;
   padding-bottom: 20px;
+  padding-top: 20px;
 `
 const Poke = styled.div`
   position: relative;
@@ -38,10 +39,10 @@ const Poke = styled.div`
 const Name = styled.h3`
   text-transform: uppercase;
   font-size: medium;
-  position: absolute;
-  bottom: 0;
+  text-align: center;
 `
 const PokeImg = styled.img`
+  max-height: 100px;
 `
 const PokeBtn = styled.button`
   position: absolute;
@@ -57,53 +58,74 @@ const PokeBtn = styled.button`
   font-size: 28px;
   cursor: pointer;
 `
+const GetBtn = styled.button`
+  width: 30%;
+  height: auto;
+  margin: 0 auto;
+`
 
-export default function Pokemon() { 
-  
-  // const [pokedexState, setPokedexState] = useState([]);
+export default function Pokemon() {
 
-  // useEffect(() => {
-  //   encounterWildPokemon();
-  // }, [])
+  const [pokemonState, setPokemonState] = useState({});
+  const [pokemonsState, setPokemonsState] = useState([]);
 
-  
+
+
+  useEffect(() => {
+    setPokemonsState(state => {
+
+        const monExists = (state.filter(p => pokemonState.id === p.id).length > 0);
+
+        if (!monExists) {
+
+          // the state is set to the state PLUS the new pokemon which is the "pokemonState" but under some conditions
+          state = [...state, pokemonState]
+
+          // sorts in ascending order
+          state.sort(function (a, b) {
+            // Returns the state under some conditions, in this case it places them in ascending order
+            return a.id - b.id
+          })
+        }
+        return state;
+    })
+  }, [pokemonState])
+
+  const Loop = () => {
+    for (let i = 1; i <= 100; i++) {
+      GetAllPokemon(i);
+    }
+  }
+
+
+  const GetAllPokemon = (x) => {
+
+    axios
+      .get(`https://pokeapi.co/api/v2/pokemon/${x}`)
+      // .then(res => setwildPokemonState(res.data))
+      .then(res => setPokemonState(res.data))
+  }
+
 
   return (
     <>
-  <Container>
-    <Title>Pokemon</Title>
-    <PokemonContainer>
-      <Header>Pick Your Favorite</Header>
-      <List>
-        {/* under this I mapped through state and then rendered each pokemon individually */}
-        {/* {pokedexState.map((pokemon) => (
-
-
-          Name, PokeBtn, PokeImg should be in here
-
-
-
-        )) */}
-        <Poke key="" info="" >
-          <Name>Pikachu</Name>
-          <PokeImg src="" alt="pokemon" />
-          {/* ADD this to the src: {`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} */}
-          <PokeBtn onClick={() => console.log("Do Something")}>&times;</PokeBtn>
-        </Poke>
-
-        {/* 
-
-        {pokedexState.map((pokemon) => (
-            <div className="pokemon" key={pokemon.id} info={pokemon} >
-                <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} alt="caught pokemon" className="sprite"/>
-                <h3 className="pokemon-name">{pokemon.name}</h3>
-                <button className="remove" onClick={() => releasePokemon(pokemon.id)} >&times;</button>
-            </div>
-        ))}
-
-        */}
-      </List>
-    </PokemonContainer>
-  </Container>
-  </>
-)};
+      <Container>
+        <Title>Pokemon</Title>
+        <PokemonContainer>
+          <Header>Pick Your Favorite</Header>
+          <GetBtn onClick={() => Loop()} >Generate </GetBtn>
+          <List>
+            {pokemonsState.map((pokemon) => (
+            <Poke id={pokemon.id} info={pokemon} >
+              <Name>{pokemon.name}</Name>
+              <PokeImg src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} alt="pokemon" />
+              <PokeBtn onClick={() => console.log("Do Something")}>&times;</PokeBtn>
+            </Poke>
+            ))
+            }
+          </List>
+        </PokemonContainer>
+      </Container>
+    </>
+  )
+};

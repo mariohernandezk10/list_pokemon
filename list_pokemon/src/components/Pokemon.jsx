@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -63,6 +63,11 @@ const GetBtn = styled.button`
   height: auto;
   margin: 0 auto;
 `
+// const Sort = styled.button`
+//   width: 30%;
+//   height: auto;
+//   margin: 0 auto;
+// `
 
 export default function Pokemon() {
 
@@ -79,20 +84,20 @@ export default function Pokemon() {
         if (!monExists) {
 
           // the state is set to the state PLUS the new pokemon which is the "pokemonState" but under some conditions
-          state = [...state, pokemonState]
+          state = [...state, pokemonState];
 
-          // sorts in ascending order
           state.sort(function (a, b) {
             // Returns the state under some conditions, in this case it places them in ascending order
             return a.id - b.id
           })
+
         }
         return state;
     })
   }, [pokemonState])
 
   const Loop = () => {
-    for (let i = 1; i <= 100; i++) {
+    for (let i = 1; i <= 20; i++) {
       GetAllPokemon(i);
     }
   }
@@ -114,10 +119,13 @@ export default function Pokemon() {
         <PokemonContainer>
           <Header>Pick Your Favorite</Header>
           <GetBtn onClick={() => Loop()} >Generate </GetBtn>
+
+          {/* <Sort onClick={() => pokemonsState.sort(function (a, b) { return a.id - b.id })}>Sort in Ascending Order</Sort> */}
+
           <List>
             {pokemonsState.map((pokemon) => (
-            <Poke id={pokemon.id} info={pokemon} >
-              <Name>{pokemon.name}</Name>
+            <Poke info={pokemon} >
+              <Name >{pokemon.name}</Name>
               <PokeImg src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} alt="pokemon" />
               <PokeBtn onClick={() => console.log("Do Something")}>&times;</PokeBtn>
             </Poke>

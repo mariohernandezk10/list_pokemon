@@ -7,7 +7,7 @@ const Container = styled.div`
   border: 2px outset red;
 `;
 const Title = styled.p`
-  font-size: 5px;
+  font-size: 25px;
   font-weight: 400;
   text-align: center;
 `;
